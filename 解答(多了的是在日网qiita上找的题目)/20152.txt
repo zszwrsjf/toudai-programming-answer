@@ -1,0 +1,94 @@
+def f(x):
+    if x < 1:
+        return 1
+    else:
+        return (161 * f(x-1) + 2457) % (1 << 24)
+# print(f(100))
+
+def q2():
+    ret = 0
+    for i in range(100):
+        if f(i) % 2 == 0:
+            ret += 1
+    print(ret)
+# q2()
+
+def q3():
+    ret = 0
+    for i in range(100):
+        if f(i) % 2 == 0 and i % 2 == 1:
+            ret += 1
+    print(ret)
+# q3()
+
+def q4(x):
+    def fdp(x):
+        dp = [1]
+        for i in range(1,x+1):
+            now = (161 * dp[i-1] + 2457) % (1 << 24)
+            dp.append(now)
+        return dp[x]
+    print(fdp(x))
+# q4(1000000)
+
+def q5(x):
+    dp = [1]
+    for i in range(1,x+1):
+        now = (1103515245 * dp[i-1] + 12345) % (1<<26)
+        dp.append(now)
+    return dp[x]
+# print(q5(2),q5(3))
+from math import gcd
+
+def q6(): # 线性同余法 证明周期
+    """
+    g(n) = (a * g(n-1) + c) mod m
+    g(n) = (a^k * g(n-k) + c(a^(k-1) + a^(k-2) + ... + 1)) mod m
+    g(n) = g(n-k) かつ　n = 1 とする
+    1 = (a^k + c( (a^k - 1)/(a - 1) )) mod m
+    a^k + c( (a^k - 1)/(a - 1) ) = t*m + 1 # t が自然数
+    (a^k - 1){(1 + c/(a-1))} = t * m
+    (c+a-1)(1+a+a^2+...+a^k-1) = t * m
+    c+a-1が奇数だから、右式が2^26の倍数だなければならない
+    a と　m がお互いに素なので　2^26個だけ成立　なので k = m
+
+
+    """
+    MOD = (1 << 26)
+    a = 1103515245
+    from sympy import divisors,isprime
+    d = divisors(a)
+    for i in d:
+        if isprime(i):
+            print(i)
+    # ha = ((pow(a,MOD)-1) / (a-1) ) % MOD
+
+    c = 12345
+
+    if gcd(c,MOD) == 1 and gcd(a-1,MOD) >= 4:
+        return MOD
+
+    MOD = 1<<26
+    cur = 1
+    k = 1
+    while True:
+        cur = (1103515245 * cur+12345) % MOD
+        if cur == 1:
+            break
+        k += 1
+        if k > 100000000:
+            k = -1
+            break
+    return k # 不要输出任何东西的话 1分钟就能出答案
+# print(q6())
+
+def q7():
+    now = 1
+    MOD = (1 << 26)
+    a = 1103515245 % MOD
+    for i in range(1,2000):
+        now = (a * now + 12345) % MOD
+        if now % (1<<10) == 1:
+            return i
+
+print(q7())

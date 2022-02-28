@@ -1,0 +1,63 @@
+from functools import lru_cache
+@lru_cache(maxsize=10)
+def q1(x):
+    if x <= 2:
+        return 1
+    else:
+        return q1(x-1) + q1(x-2)
+# print(q1(10))
+
+def q2(x):
+    dp = [0,1,1]
+    for i in range(3,x+1):
+        dp.append(dp[i-1] + dp[i-2])
+    return dp[x]
+# print(q2(50))
+
+def q3():
+    strings1 = input('文字列１')
+    strings2 = input('文字列２')
+    print(int(strings1) + int(strings2))
+# q3()
+
+def q4():
+    print(q2(140))
+# q4()
+
+from decimal import *
+getcontext().prec = 32
+def q5():
+    strings1 = input('文字列１')
+    strings2 = input('文字列２')
+    num1 = Decimal(strings1[:32]) * Decimal(pow(10,int(strings1[33:]))) / Decimal(pow(10,31))
+    num2 = Decimal(strings2[:32]) * Decimal(pow(10,int(strings2[33:]))) / Decimal(pow(10,31))
+    print(num1,num2)
+    print(num1*num2)
+
+# q5()
+
+def q6():
+    num = (Decimal(1) + Decimal(5).sqrt()) / Decimal(2)
+    return num
+q6()
+
+def q7(x):
+    now = Decimal(1)
+    for i in range(x):
+        now *= q6()
+    return now / Decimal(5).sqrt()
+
+num = q7(140)
+
+def q8():
+    maxnum = 0
+    idx = 0
+    for i in range(1,140):
+        now = abs(Decimal(q2(i)) - q7(i))
+        # print(idx,' ',now)
+        if now > maxnum:
+            maxnum = now
+            idx = i
+    return maxnum,idx
+maxnum, idx = q8()
+print(maxnum,idx)

@@ -1,0 +1,62 @@
+def isnumber(x):
+    try:
+        float(x)
+        return True
+    except ValueError:
+        return False
+def assemble(strings):
+    orders = strings.split('\n')
+    if len(orders[-1]) == 0:
+        orders = orders[:-1]
+    registers = [{}]
+    level = 0
+    subplace = []
+    pc, n = 0, len(orders)
+    while(pc < n):
+        order = orders[pc].split(' ')
+        operator, operand1, operand2 = order[0], order[1], order[2]
+        if operator == 'ADD':
+            registers[level][operand2] += int(operand1) if isnumber(operand1) else registers[level][operand1]
+        elif operator == 'CMP':
+            if isnumber(operand1):
+                tmp = int(operand1)
+                if isnumber(operand2):
+                    if tmp == int(operand2):
+                        pc += 1
+                else:
+                    if tmp == registers[level][operand2]:
+                        pc += 1
+            else:
+                if isnumber(operand2):
+                    if registers[level][operand1] == int(operand2):
+                        pc += 1
+                else:
+                    if registers[level][operand2] == registers[level][operand1]:
+                        pc += 1
+        elif operator == 'JMP':
+            pc += int(operand1) if isnumber(operand1) else registers[level][operand1]
+            pc -= 1
+        elif operator == 'PRN':
+            print('alpha: ',operand1,' = ',registers[level][operand1],'beta: ',operand2,' = ',registers[level][operand2])
+            break
+        elif operator == 'SET':
+            registers[level][operand1] = int(operand2) if isnumber(operand2) else registers[level][operand2]
+        elif operator == 'SUB':
+            subplace.append(pc)
+            pc += int(operand1) if isnumber(operand1) else registers[level][operand1]
+            pc -= 1
+        elif operator == 'BAK':
+            pc = subplace.pop()
+        elif operator == 'CAL':
+            subplace.append(pc)
+            registers.append({'in':int(operand2)} if isnumber(operand2) else {'in':registers[level][operand2]})
+            pc += int(operand1) if isnumber(operand1) else registers[level][operand1]
+            pc -= 1
+            level += 1
+        elif operator == 'RET':
+            pc = subplace.pop()
+            registers[level-1]['out'] = int(operand1) if isnumber(operand1) else registers[level][operand1]
+            registers.pop()
+            level -= 1
+        pc += 1
+assemble('SET xy 1\nSET yx 0\nADD xy yx\nADD 1 xy\nCMP xy 10\nJMP -3 0\nPRN xy yx')

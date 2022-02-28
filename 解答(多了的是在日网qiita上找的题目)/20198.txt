@@ -1,0 +1,102 @@
+dir = 'C:/Users/Administrator/Desktop/temp/'
+
+def q1():
+    f = open(dir + 'data1.txt')
+    text = f.read()
+    print(text[310:321])
+    f.close()
+# q1()
+
+def q2():
+    f1 = open(dir + 'data2b.bin')
+    text = f1.read()
+    text16 = []
+    for i in range(0,len(text),8):
+        text16.append(int(text[i:i+8],2))
+    print(text16)
+    ans = []
+    i = 0
+    n = len(text16)
+    size = 0
+    while(i < n):
+        if text16[i] != 0:
+            ans.append(text16[i])
+            size += 1
+            i += 1
+        else:
+            p = text16[i+1]
+            d = text16[i+2]
+            if d == 0:
+                ans.append(0)
+                size += 1
+            else:
+                ans += ans[-p:d-p]
+                size += d
+            i += 3
+    print(size)
+    ansstr = ''
+    for i in ans:
+        ansstr += str(hex(i))[2:] + ' ' # hex是0x??
+        print("%x" % (i),end=' ')
+    f1.close()
+    f1 = open(dir + 'data2b.txt','w') # 必须'w'才能新建
+    f1.write(ansstr)
+    f1.close()
+# q2()
+
+def q3():
+    f1 = open(dir + 'data3a.txt')
+    text = f1.read()
+    text16 = []
+    for i in range(0, len(text), 8):
+        text16.append(int(text[i:i + 8], 2))
+    for x in text16:
+        print(hex(x),end=' ')
+    f1.close()
+    print()
+
+    n = len(text16)
+    ans = ''
+    for i in text16[0:min(4,n)]:
+        tmp = '00000000' + str(bin(i))[2:]
+        ans += tmp[-8:]
+    i = 4
+    lookahead = 4
+    while(i < n):
+        if(text16[i] == 0):
+            ans += '000000000000000000000000'
+            i += 1
+            continue
+        print(str(text16[i:i+lookahead])[1:-1],'|',str(text16[:i])[1:-1])
+        if(str(text16[i:i+lookahead])[1:-1] not in str(text16[:i])[1:-1]):
+            tmp = '00000000' + str(bin(text16[i]))[2:]
+            ans += tmp[-8:]
+            i += 1
+        else:
+            lookahead += 1
+            while(str(text16[i:i+lookahead])[1:-1] in str(text16[:i])[1:-1]):
+                lookahead += 1
+            lookahead -= 1
+            print(str(text16[i:i+lookahead])[1:-1],'|',str(text16[:i])[1:-1])
+            idx = str(text16[:i])[1:-1].index(str(text16[i:i+lookahead])[1:-1])
+            right = len(str(text16[i:i+lookahead])[1:-1]) + idx
+            noko = len(str(text16[:i])[1:-1][right:]) // 4
+            length = len(str(text16[i:i+lookahead])[1:-1]) // 4 + 1
+            ans += '00000000' + ('00000000' + str(bin(length + noko))[2:])[-8:] + ('00000000' + str(bin(length))[2:])[-8:]
+            i += lookahead
+            lookahead = 4
+    print(ans)
+q3()
+
+def q4():
+    print(4)
+
+def q5():
+    e = 551263368336670859257571
+    n = 3858843578360632069557337
+    d = int(n/e)
+    c = 3678294059377362389066827
+    c2 = 3206045550022053639901108
+    m = pow(c2,d) % n
+    print(str(hex(m))[2:])
+# q5()

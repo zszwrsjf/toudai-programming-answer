@@ -1,0 +1,177 @@
+def ok(num,A,x,y):
+    flag = 1
+    for i in range(x,x+num):
+        for j in range(y,y+num):
+            try:
+                if A[i][j] != ' ':
+                    flag = 0
+            except IndexError:
+                return 2
+            if flag == 0:
+                return 0
+    return flag
+
+def q2(strings):
+    A = [[' ' for _ in range(10)]]
+    for tnum in strings:
+        num = int(tnum)
+
+        ok_flag = 0
+        for x in range(len(A)):
+            for y in range(11 - num):
+                if A[x][y] == ' ':
+                    flag = ok(num, A, x, y)
+                    if flag == 1:
+                        for i in range(x, x + num):
+                            for j in range(y, y + num):
+                                A[i][j] = '0'
+                        ok_flag = 1
+                    if flag == 2:
+                        for _ in range(x + num - len(A)):
+                            A.append([' ' for _ in range(10)])
+                        for i in range(x, x + num):
+                            for j in range(y, y + num):
+                                A[i][j] = '0'
+                        ok_flag = 1
+                    if flag == 0:
+                        continue
+                if ok_flag == 1:
+                    break
+            if ok_flag == 1:
+                break
+        if ok_flag == 0:
+            x = len(A)
+            for _ in range(num):
+                A.append([' ' for _ in range(10)])
+            for i in range(x, x + num):
+                for j in range(0, num):
+                    A[i][j] = '0'
+
+    return A, len(A)
+
+
+def q3(strings):
+    A = [[' ' for _ in range(10)]]
+    idx = 0
+    char = [str(i) for i in range(1,10)] + ['0'] + [str(chr(i)) for i in range(65,65+26)]
+    for tnum in strings:
+        num = int(tnum)
+
+        ok_flag = 0
+        for x in range(len(A)):
+            for y in range(11-num):
+                if A[x][y] == ' ':
+                    flag = ok(num,A,x,y)
+                    if flag == 1:
+                        for i in range(x,x+num):
+                            for j in range(y,y+num):
+                                A[i][j] = char[idx]
+                        idx += 1
+                        ok_flag = 1
+                    if flag == 2:
+                        for _ in range(x+num-len(A)):
+                            A.append([' ' for _ in range(10)])
+                        for i in range(x,x+num):
+                            for j in range(y,y+num):
+                                A[i][j] = char[idx]
+                        idx += 1
+                        ok_flag = 1
+                    if flag == 0:
+                        continue
+                if ok_flag == 1:
+                    break
+            if ok_flag == 1:
+                break
+        if ok_flag == 0:
+            x = len(A)
+            for _ in range(num):
+                A.append([' ' for _ in range(10)])
+            for i in range(x,x+num):
+                for j in range(0,num):
+                    A[i][j] = char[idx]
+            idx += 1
+
+    return A
+
+# strings = input()
+# # 113142421231
+# A = q2(strings)
+# for i in A:
+#     print(i)
+# print(len(A))
+
+deep = float('INF')
+dic = {}
+ok_strings = ''
+def dfs(new_strings,n):
+    global deep
+    global dic
+    global ok_strings
+    if len(new_strings) == n:
+        # print(new_strings)
+        ok_strings = new_strings
+        deep = min(deep,q2(new_strings)[1])
+    for i in range(1,5):
+        if dic[i] > 0:
+            dic[i] -= 1
+        else:
+            continue
+        dfs(new_strings + str(i),n)
+        dic[i] += 1
+
+import re
+
+def q4():
+    strings = input()
+    lis = list(map(int,re.findall('[0-9]',strings)))
+    n = len(lis)
+    from collections import Counter
+    global dic
+    dic = dict(Counter(lis))
+    for i in range(1,5):
+        if i not in dic:
+            dic[i] = 0
+    patten = 0
+    new_strings = ''
+    diff = 0
+    while dic[4] >= 3 and dic[3] >= 8:
+        """
+        433
+         33        
+        433
+        433
+        """
+        dic[4] -= 3
+        dic[3] -= 8
+        patten += 12
+        diff += 11
+        new_strings += '43333433433'
+    while dic[4] >= 2 and dic[2] >= 2:
+        """
+        442
+          2 
+        """
+        dic[4] -= 2
+        dic[2] -= 2
+        patten += 4
+        diff += 4
+        new_strings += '442'
+    while dic[4] >= 2 and dic[3] >= 4 and dic[1] >= 2:
+        """
+        4 3 3
+          11
+        3 3 4
+        """
+        dic[4] -= 2
+        dic[3] -= 4
+        dic[1] -= 2
+        diff += 8
+        patten += 7
+        new_strings += '43333411'
+    dfs('',n-diff) # ²Ð¤Ã¤¿¤Î¤¹¤Ù¤Æ¤òdfs¤Ç×îÐ¡‚Ž¤òÌ½Ë÷
+    print(deep+patten)
+    print(new_strings + ok_strings)
+    A = q3(new_strings + ok_strings)
+    for i in A:
+        print(i)
+q4() # 34433244334334133

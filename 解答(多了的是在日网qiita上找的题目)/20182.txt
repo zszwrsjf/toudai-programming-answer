@@ -1,0 +1,127 @@
+def q1(strings):
+    s, t = 0, 0
+    idx, n = 0, len(strings)
+    while(idx < n):
+        if strings[idx] == 'S':
+            s += 1
+            idx += 1
+        elif strings[idx] == 's':
+            s -= 1
+            idx += 1
+        elif strings[idx] == 'T':
+            t += 1
+            idx += 1
+        elif strings[idx] == 't':
+            t -= 1
+            idx += 1
+        elif strings[idx] == 'f':
+            break
+        elif strings[idx] == 'j':
+            idx = int(strings[idx + 1: idx + 5]) - 1
+        elif strings[idx] == 'b':
+            if s > 0:
+                idx = int(strings[idx + 1: idx + 5]) - 1
+            else:
+                idx += 5
+    return s,t
+
+# s, t = q1('j0018j0013Tfj0011j0006')
+# print(s,t)
+
+def q2():
+    f = open('C:/Users/Administrator/Desktop/temp/2018w/1.txt')
+    strings = f.read()
+    n = len(strings)
+    global completed
+    completed = set()
+    global bok
+    bok = set()
+    print(strings)
+
+    def dfs(strings, idx, stack, s, t):
+
+        while (idx < n):
+            print(idx, stack, s, t)
+            print(strings[idx:idx + 10])
+            global completed
+            completed.add(idx)
+            global bok
+            if strings[idx] == 'S':
+                s += 1
+                idx += 1
+            elif strings[idx] == 's':
+                s -= 1
+                idx += 1
+            elif strings[idx] == 'T':
+                t += 1
+                idx += 1
+            elif strings[idx] == 't':
+                t -= 1
+                idx += 1
+            elif strings[idx] == 'f':
+                break
+            elif strings[idx] == 'j':
+                idx = int(strings[idx + 1: idx + 5]) - 1
+            elif strings[idx] == 'b':
+                idx_tmp = int(strings[idx + 1: idx + 5]) - 1
+                if idx_tmp not in bok:
+                    bok.add(idx_tmp)
+                    dfs(strings, idx_tmp, stack, s, t)
+                    dfs(strings, idx + 5, stack, s, t)
+                else: return
+            elif strings[idx] == 'c':
+                stack.append(int(strings[idx + 1: idx + 5]))
+                idx += 5
+            elif strings[idx] == 'r':
+                index = stack.pop()
+                idx = index - 1
+
+    dfs(strings, 0, [], 0, 0)
+    total = 0
+    for ch in strings:
+        if '0' <= ch <= '9': {}
+        else: total += 1
+    print(total - len(completed))
+# q2()
+
+def q3():
+    strings = 'TTb0718b0680b0054Tj0069b0049b0041TTj0042sttj0053SSSStb0065Sj0068TttSb0652b0102b0090Sj0093SSSTj0103TTTTTj0671j0642TTTb0235j0222TTb0189j0177SSb0154SsTj0158SSttTSb0172STj0176SssTTb0159TTj0221b0203ssSSj0219j0213SSTTTb0208sTTTb0127tttj0640j0634tttb0298j0285j0265SSttSTTb0262j0277sTb0275TTTb0253sssj0417tb0328j0315stSSttb0311STTj0345b0340sSj0343sSSttb0377b0365sstttj0371SsssssSj0414b0392SSSSSj0395STTttj0407SSssTb0402sstttb0574j0447j0438sTssssb0434TTTTb0427b0542j0467ssssTb0462sj0485SSSSTTTb0478ttj0546SSb0515sssSTTj0520SSTTTb0535SSSsSj0541SSSSSTStTTTSSSj0631b0568TTTTj0573TTttttb0585Tj0628b0601sssSSSj0604sTTj0620SssSSSssSttb0615sssTsstttb0243tttb0114sstttb0665sssj0668SttTTTssj0712ssj0706sj0699TSSTTSSSb0694SSb0686ttj0890b0731ssSj0761j0742TTTtttb0739j0753Tb0752TTTb0783j0772Tb0771sj0889Sb0883b0859j0848b0811Stj0846b0841j0828ttSStttb0821TTTj0845TTttTtTb0847sj0875b0872ssTj0873sssTTj0888TSTtttStttc0909sc0909c0975fc1905sssb0955b0948j0937c0909b0932Sj0950TTj0974Tc0909sssc1052c0909rtb0993SSc0975j1000ttc1001rSSj1045b1021tttj1042b1034Sttj1039ssTTTttrtttb1008Srb1064ttj1068SSSrb1538TTTTj1600j1532b1270j1131b1124b1116Ttj1117sSTTTj1129TTsssSSb1097tttj1273b1263b1190b1167ttTj1183j1176ssttb1172Trttj1255j1247Tb1211TsTTTj1246b1244j1229SSttsSSSb1225TTTj1245tttSSb1195SSStttj1266TTtTTTTSssb1483b1293Tssttj1475b1438b1395b1383j1339b1330sTTj1333SSttsssTTSsssb1335Sj1387b1364ttttj1382b1376sSj1381ssSSSStSSssSSSj1410j1403STTb1401ssssj1472b1432tttj1435StTTTtttb1466j1453tTtSSb1450sssj1470SsssSStttSSSj1531b1526Sj1528j1520b1512tttj1516ssssSSTTb1518tttsssTb1087Tj1592Tb1557ssj1590Tb1568Tj1569Tb1584ssTTTj1587TTTTTTttb1543TTTTTrTb1897b1884b1631Tsssj1877tttb1870j1857Tb1666c1052TTj1855c1001TTj1689c1001c1001ttttTtttb1684j1848b1731b1718sTTTj1723SSTTTttTj1748b1745SSTTj1747STtc1052TTc1001b1828Sb1786SSSTTj1790SsssssSSStttj1846c1001b1822ssstttj1827SSSSSSSStb1841Sttj1844SSrTTTTb1755TTSSb1641Tj1876STc1052tTSSj1890c1052STTj1901TTtrSSSrc1052SStr'
+    # strings = 'TTb0718b0680b0054Tj0069b0049b0041TTj0042sttj0053SSSStb0065Sj0068TttSb0652b0102b0090Sj0093SSSTj0103TTTTTj0671j0642TTTb0235j0222TTb0189j0177SSb0154SsTj0158SSttTSb0172STj0176SssTTb0159TTj0221b0203ssSSj0219j0213SSTTTb0208sTTTb0127tttj0640j0634tttb0298j0285j0265SSttSTTb0262j0277sTb0275TTTb0253sssj0417tb0328j0315stSSttb0311STTj0345b0340sSj0343sSSttb0377b0365sstttj0371SsssssSj0414b0392SSSSSj0395STTttj0407SSssTb0402sstttb0574j0447j0438sTssssb0434TTTTb0427b0542j0467ssssTb0462sj0485SSSSTTTb0478ttj0546SSb0515sssSTTj0520SSTTTb0535SSSsSj0541SSSSSTStTTTSSSj0631b0568TTTTj0573TTttttb0585Tj0628b0601sssSSSj0604sTTj0620SssSSSssSttb0615sssTsstttb0243tttb0114sstttb0665sssj0668SttTTTssj0712ssj0706sj0699TSSTTSSSb0694SSb0686ttj0890b0731ssSj0761j0742TTTtttb0739j0753Tb0752TTTb0783j0772Tb0771sj0889Sb0883b0859j0848b0811Stj0846b0841j0828ttSStttb0821TTTj0845TTttTtTb0847sj0875b0872ssTj0873sssTTj0888TSTtttStttc1838ttSSSc1838b0928c0934c0934fj0933c0934fSSj0978b0954tttj0975b0967Sttj0972ssTTTttrtttb0941Srb0997ttj1001SSSrb1471TTTTj1533j1465b1203j1064b1057b1049Ttj1050sSTTTj1062TTsssSSb1030tttj1206b1196b1123b1100ttTj1116j1109ssttb1105Trttj1188j1180Tb1144TsTTTj1179b1177j1162SSttsSSSb1158TTTj1178tttSSb1128SSStttj1199TTtTTTTSssb1416b1226Tssttj1408b1371b1328b1316j1272b1263sTTj1266SSttsssTTSsssb1268Sj1320b1297ttttj1315b1309sSj1314ssSSSStSSssSSSj1343j1336STTb1334ssssj1405b1365tttj1368StTTTtttb1399j1386tTtSSb1383sssj1403SsssSStttSSSj1464b1459Sj1461j1453b1445tttj1449ssssSSTTb1451tttsssTb1020Tj1525Tb1490ssj1523Tb1501Tj1502Tb1517ssTTTj1520TTTTTTttb1476TTTTTrTb1830b1817b1564Tsssj1810tttb1803j1790Tb1599c0985TTj1788c0934TTj1622c0934c0934ttttTtttb1617j1781b1664b1651sTTTj1656SSTTTttTj1681b1678SSTTj1680STtc0985TTc0934b1761Sb1719SSSTTj1723SsssssSSStttj1779c0934b1755ssstttj1760SSSSSSSStb1774Sttj1777SSrTTTTb1688TTSSb1574Tj1809STc0985tTSSj1823c0985STTj1834TTtrSSSrc0985SStr'
+    total = 0
+    n = len(strings)
+    global bok
+    bok = set()
+    global res
+    res = float('inf')
+
+    def dfs(strings,idx,stack,now):
+        global bok
+        global res
+        while(idx < n):
+            print(idx,stack,now)
+            if strings[idx] == 'b':
+                idx_tmp = int(strings[idx + 1: idx + 5]) - 1
+                if idx_tmp not in bok:
+                    bok.add(idx_tmp)
+                    dfs(strings, idx_tmp, stack, now + 1)
+                    dfs(strings, idx + 5, stack, now + 1)
+                else: return
+            elif strings[idx] == 'f':
+                res = min(res, now + 1)
+                return
+            else:
+                now += 1
+
+                if strings[idx] == 'j':
+                    idx = int(strings[idx + 1: idx + 5]) - 1
+                elif strings[idx] == 'c':
+                    stack.append(int(strings[idx + 1: idx + 5]))
+                    idx += 5
+                elif strings[idx] == 'r':
+                    index = stack.pop()
+                    idx = index - 1
+                else: idx += 1
+
+    total = dfs(strings,0,[],0)
+    print(res)
+q3()

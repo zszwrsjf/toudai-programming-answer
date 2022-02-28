@@ -1,0 +1,133 @@
+def q1():
+    text = '19 7 0 17 13 1 29 3 27 5 11 23 123 200 32 1 2 3 4 5 6 7 8 9 10 11 12'
+    textlist = text.split(' ')
+    textlist = list(map(int,textlist))
+    print(len(textlist) // 3)
+# q1()
+
+def q2():
+    import random
+    textlist = []
+    for i in range(32):
+        for j in range(28):
+            textlist.append(random.randint(0, 256))
+            textlist.append(random.randint(0, 256))
+            textlist.append(random.randint(0, 256))
+        textlist.append(0)
+        textlist.append(0)
+        textlist.append(0)
+    # print(textlist)
+
+    i, n = 0,len(textlist)
+    results = []
+    tmp = []
+    while(i < n): # 这个不对 应该找n的因数 然后从最小的作为width一次一次遍历是否满足右面是白线
+divisors(n)
+        tmp.append([textlist[i],textlist[i+1],textlist[i+2]])
+        if textlist[i] == 0 and textlist[i+1] == 0 and textlist[i + 2] == 0:
+            results.append(tmp.copy())
+            tmp.clear()
+        i += 3
+    print(results)
+    print(len(results[0])) # 横向大小（29是包含了白线
+# q2()
+
+def q3():
+    def cmp(a):
+        return a[0] ** 2 + a[1] ** 2 + a[2] ** 2
+
+    text = '19 7 0 17 13 1 29 3 27 5 11 7 0 17 23 123 200 7 0 17 32 1 2 3 4 5 6 7 8 9 10 11 12 0 2 3'
+    textlist = text.split(' ')
+    textlist = list(map(int, textlist))
+
+    pixel = []
+    for i in range(0,len(textlist),3):
+        pixel.append([textlist[i],textlist[i+1],textlist[i+2],i//3])
+    pixel = sorted(pixel,key=cmp) # key=要加上！！！
+    print(pixel[len(pixel)//2]) # r g b index
+# q3()
+
+def q4():
+    def cmp(a):
+        return a[0] ** 2 + a[1] ** 2 + a[2] ** 2
+    text = '19 7 0 17 13 1 29 3 27 5 11 7 0 17 23 123 200 7 0 17 32 1 2 3 4 5 6 7 8 9 10 11 12 0 2 3'
+    textlist = text.split(' ')
+    textlist = list(map(int, textlist))
+
+    pixel = []
+    for i in range(0, len(textlist), 3):
+        pixel.append([textlist[i], textlist[i + 1], textlist[i + 2], i // 3])
+    pixel = sorted(pixel, key=cmp)  # key=要加上！！！
+    print(pixel)
+    k = int(input())
+    n = len(pixel)
+    for i in range(0,n,n//k):
+        print(pixel[i])
+# q4()
+
+def q5():
+    def cmp(a):
+        return a[0] ** 2 + a[1] ** 2 + a[2] ** 2
+    text = '19 7 0 17 13 1 29 3 27 5 11 7 0 17 23 123 200 7 0 17 32 1 2 3 4 5 6 7 8 9 10 11 12 0 2 3'
+    textlist = text.split(' ')
+    textlist = list(map(int, textlist))
+
+    pixel = []
+    for i in range(0, len(textlist), 3):
+        pixel.append([textlist[i], textlist[i + 1], textlist[i + 2], i // 3])
+    sorted_pixel = sorted(pixel, key=cmp)  # key=要加上！！！
+    print(pixel)
+    k = int(input())
+    n = len(pixel)
+    pi = []
+    for i in range(0, n, n // k):
+        pi.append(sorted_pixel[i][:3])
+    print('init: ', pi)
+    C = {}
+
+    epochs = 10
+    for epoch in range(epochs):
+        for i in range(n):
+            min_distance = 1000
+            idx = -1
+            for j in range(k):
+                distance = abs(pi[j][0] - pixel[i][0]) + abs(pi[j][1] - pixel[i][1]) + abs(pi[j][2] - pixel[i][2])
+                if min_distance >= distance:
+                    min_distance = distance
+                    idx = j
+            C[i] = idx
+        print(C)
+        new_pi = [[0,0,0] for i in range(k)]
+        new_n = [0 for i in range(k)]
+        for idx, grorp in C.items():
+            new_pi[grorp][0] += pixel[idx][0]
+            new_pi[grorp][1] += pixel[idx][1]
+            new_pi[grorp][2] += pixel[idx][2]
+            new_n[grorp] += 1
+        for i in range(k):
+            new_pi[i][0] //= new_n[i]
+            new_pi[i][1] //= new_n[i]
+            new_pi[i][2] //= new_n[i]
+        new_n.clear()
+        C.clear()
+        pi.clear()
+        for i in range(k):
+            pi.append(new_pi[i])
+        print(epoch+1, ':', pi)
+
+    for i in range(n):
+        min_distance = 1000
+        idx = -1
+        for j in range(k):
+            distance = abs(pi[j][0] - pixel[i][0]) + abs(pi[j][1] - pixel[i][1]) + abs(pi[j][2] - pixel[i][2])
+            if min_distance >= distance:
+                min_distance = distance
+                idx = j
+        C[i] = idx
+    print(C)
+
+
+q5()
+def q6():
+# w = 2
+# w = w.to_bytes(size,'big') # type 这样才能tif

@@ -1,0 +1,173 @@
+def q1():
+    input_4 = input('input 4 number')
+    # print(input_4)
+    now = 1
+    base = 4
+    ret = 0
+    n = len(input_4)
+    for i in range(0,n):
+        # print(int(input_4[n-i-1]))
+        ret += now * int(input_4[n-i-1])
+        now *= base
+    print(ret)
+
+# q1()
+
+def q2():
+    input_8 = input('input 8 number')
+    now = 1
+    base = 8
+    ret = 0
+    for ch in input_8[::-1]:
+        ret += now * (ord(ch) - 97)
+        now *= base
+    print(ret)
+# q2()
+
+def q3():
+    orinum = 2015
+    strnum = str(orinum)
+    mapper = {1:'I',5:'V',10:'X',50:'L',100:'C',500:'D',1000:'M'}
+    n = len(strnum)
+    ret = ''
+    for ch in strnum:
+        now = pow(10,n-1)
+        d = int(ch)
+        if(d == 9):
+            ret += mapper[now]
+            ret += mapper[10 * now]
+            n -= 1
+            continue
+        elif(d == 4):
+            ret += mapper[now]
+            ret += mapper[5 * now]
+            n -= 1
+            continue
+        elif(d > 4):
+            ret += mapper[5 * now]
+            d -= 5
+        while(d != 0):
+            ret += mapper[now]
+            d -= 1
+
+        n -= 1
+    print(ret)
+
+# q3()
+
+def q4():
+    mapper = {'I':1, 'V':5, 'X':10, 'L':50, 'C':100, 'D':500, 'M':1000}
+    input_roman = input('input roman number')
+    former = '0'
+    ret = 0
+    for ch in input_roman:
+        if former == '0':{}
+        elif mapper[former] < mapper[ch]:
+            ret -= mapper[former]
+        else:
+            ret += mapper[former]
+        former = ch
+    ret += mapper[input_roman[-1]]
+    print(ret)
+# q4()
+
+def q5():
+    strnum = input('input 10 shin number')
+    mapper = {1: 'I', 5: 'V', 10: 'X', 50: 'L', 100: 'C', 500: 'D', 1000: 'M'}
+    n = len(strnum)
+    ret = ''
+    for ch in strnum:
+        now = pow(10, n - 1)
+        d = int(ch)
+        if (d == 9):
+            ret += mapper[now]
+            ret += mapper[10 * now]
+            n -= 1
+            continue
+        elif (d == 4):
+            ret += mapper[now]
+            ret += mapper[5 * now]
+            n -= 1
+            continue
+        elif (d > 4):
+            ret += mapper[5 * now]
+            d -= 5
+        while (d != 0):
+            ret += mapper[now]
+            d -= 1
+
+        n -= 1
+    print(ret)
+
+# q5()
+
+def q6():
+    mapper = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
+    input_roman = input('input roman number')
+    former = '0'
+    ret = 0
+    for ch in input_roman:
+        if former == '0':
+            {}
+        elif mapper[former] < mapper[ch]:
+            ret -= mapper[former]
+        else:
+            ret += mapper[former]
+        former = ch
+    ret += mapper[input_roman[-1]]
+    print(ret)
+
+# q6()
+
+def q7():
+    eng_dict = {
+        'one': 1,
+        'two': 2,
+        'three': 3,
+        'four': 4,
+        'five': 5,
+        'six': 6,
+        'seven': 7,
+        'eight': 8,
+        'nine': 9,
+        'ten': 10,
+        'eleven': 11,
+        'twelve': 12,
+        'thirteen': 13,
+        'fourteen': 14,
+        'fifteen': 15,
+        'sixteen': 16,
+        'seventeen': 17,
+        'eighteen': 18,
+        'nineteen': 19,
+        'twenty': 20,
+        'thirty': 30,
+        'forty': 40,
+        'fifty': 50,
+        'sixty': 60,
+        'seventy': 70,
+        'eighty': 80,
+        'ninety': 90
+    }
+
+    ret = 0
+    input_eng = input('input eng hyougen')
+    import re
+    listeng = re.split(r'\W+', input_eng)
+
+    now = 0
+    for i in listeng:
+        if i == 'thousand':
+            ret += 1000 * now
+            now = 0
+            continue
+        elif i == 'hundred':
+            ret += 100 * now
+            now = 0
+            continue
+        now += eng_dict[i]
+    ret += now
+    print(ret)
+
+#fifty four thousand three hundred twelve
+q7()

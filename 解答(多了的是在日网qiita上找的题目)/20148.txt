@@ -1,0 +1,188 @@
+import numpy as np
+import scipy as sp
+import math
+# 16:46
+# 18:09
+
+dir = 'C:\\Users\\Administrator\\Desktop\\temp\\'
+
+# (1)
+def f_1():
+    f = open(dir + 'program.c', encoding='utf-8')
+    program = f.read()
+    print ('# of ; = ' + str(program.count(';')))
+
+# (2)
+def f_2():
+    f = open(dir + 'program.txt', encoding='utf-8')
+    # i = 0
+    # for line in f.readlines():
+    #     i+=1
+    #     print(str(i) + ': \t' + line.replace('\n', ''))
+    strings = f.read()
+    f.close()
+    str_list = strings.split('\n')
+    for i, s in enumerate(str_list[:-1]):
+        print(i+1,' : ',s)
+# f_2()
+# (3)
+def f_3():
+    f = open(dir + 'program.txt', encoding='utf-8')
+    line_prev = None
+    for line in f.readlines():
+        line = line.replace('\n', '')
+        if (line_prev == line):
+            print(line)
+        line_prev = line
+# f_3()
+# (4)
+def f_4():
+    f = open(dir + 'program.txt', encoding='utf-8')
+    strings = f.read()
+    f.close()
+    str_list = strings.split('\n')
+    dic = {}
+    ret = 0
+    for i in str_list:
+        if len(i) == 0:
+            continue
+        if i in dic:
+            if dic[i] == 1:
+                ret += 1
+                dic[i] += 1
+        else:
+            dic[i] = 1
+    print(ret)
+# f_4()
+
+# (5)
+def zip_line(line1, line2):
+    len1, len2 = len(line1), len(line2)
+    if (len1 < len2):
+        line1 += ''.join([' ' for _ in range(len2-len1)])
+    elif (len1 < len2):
+        line2 += ''.join([' ' for _ in range(len1-len2)])
+    return list(zip(line1, line2))
+
+def is_similar_pair(line1, line2):
+    ziped = zip_line(line1, line2)
+    diff_count = sum([
+        1 if p != q else 0
+        for (p,q) in ziped
+    ])
+    return 0 < diff_count < 5
+
+def f_5():
+    f = open(dir + 'program.txt', encoding='utf-8')
+    history = []
+    sim_line_count = 0
+    for line in f.readlines():
+        line = line.replace('\n', '')
+
+        if (len(line) < 20):
+            continue
+
+        for line_prev in history:
+            if (is_similar_pair(line, line_prev)):
+                sim_line_count+=1
+                print(line_prev)
+                print(line)
+                print('')
+
+        history.append(line)
+    print(sim_line_count)
+
+# f_5()
+
+# (6)
+def dpsimilar(l1,l2):
+    l1 = '#' + l1
+    l2 = '#' + l2 # ここポイント！！！　空列の場合は'#'で
+    n1 = len(l1)
+    n2 = len(l2)
+    dp = [[0 for _ in range(n1)] for _ in range(n2)]
+    for i in range(1,n1):
+        dp[0][i] = i
+    for i in range(1,n2):
+        dp[i][0] = i
+    for i in range(1,n2):
+        for j in range(1,n1):
+            if l2[i] == l1[j]:
+                dp[i][j] = dp[i-1][j-1]
+            else:
+                dp[i][j] = min(dp[i-1][j-1],min(dp[i-1][j],dp[i][j-1])) + 1 # 分别为换 插 删
+    return dp[n2-1][n1-1]
+
+def f_6():
+    f = open(dir + 'program.txt')
+    str_list = []
+    for line in f.readlines():
+        line = line.replace('\n','')
+        if len(line) == 0:
+            continue
+        else:
+            str_list.append(line)
+    f.close()
+    n = len(str_list)
+    # print(str_list)
+    ret = 0
+    for i in range(n-1):
+        for j in range(i+1,n):
+            if dpsimilar(str_list[i],str_list[j]) < 4 and str_list[i] != str_list[j]:
+                ret += 1
+                print(str_list[i],' ',str_list[j])
+    print(ret)
+# f_6()
+
+# (7)
+
+# コンボ終了時評価
+def end_of_db(history, temp_db_i, temp_dl_cnt):
+    if (temp_dl_cnt >= 4):
+        for i in range(temp_db_i, temp_db_i + temp_dl_cnt):
+            print(history[i])
+
+def f_7():
+    f = open(dir + 'program.txt', encoding='utf-8')
+    history = []
+    # temp_dup_block_index
+    temp_db_i = None
+    # temp_dup_line_count
+    temp_dl_cnt = 0
+
+    end_check = False
+
+    # 読んでいく
+    for line in f.readlines():
+        line = line.replace('\n', '')
+
+        # コンボ継続中
+        if (temp_db_i != None):
+            # 続くか？
+            if (len(history) > temp_db_i + temp_dl_cnt):
+                if (line == history[temp_db_i + temp_dl_cnt]):
+                    temp_dl_cnt+=1
+                else:
+                    end_check = True
+            else:
+                end_check = True
+
+            if end_check:
+                end_check = False
+                end_of_db(history, temp_db_i, temp_dl_cnt)
+                if (line in history):
+                    temp_db_i = history.index(line)
+                    temp_dl_cnt = 1
+                else:
+                    temp_db_i = None
+                    temp_dl_cnt = 0
+
+        # コンボ開始できるか？
+        elif (line in history):
+            temp_db_i = history.index(line)
+            temp_dl_cnt+=1
+
+        # 読み込み記録
+        history.append(line)
+
+f_7()
